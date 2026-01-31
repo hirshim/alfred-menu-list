@@ -2,12 +2,12 @@
 
 import os
 from datetime import datetime
-from typing import List, Tuple
+from typing import List
 
 import gspread
 from google.oauth2.service_account import Credentials
 
-MenuItem = Tuple[str, str, List[str]]
+from menu_extractor import MenuItem
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 

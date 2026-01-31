@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from menu_extractor import (
+    AccessibilityError,
     MenuBarNotFoundError,
     MenuExtractionError,
     _parse_output,
@@ -176,4 +177,24 @@ class TestExtractMenus:
 
         mock_run.side_effect = subprocess.TimeoutExpired(cmd="osascript", timeout=60)
         with pytest.raises(MenuExtractionError, match="タイムアウト"):
+            extract_menus()
+
+    @patch("menu_extractor.subprocess.run")
+    def test_accessibility_error_assistive(self, mock_run: MagicMock) -> None:
+        mock_run.return_value = MagicMock(
+            returncode=1,
+            stdout="",
+            stderr="is not allowed assistive access",
+        )
+        with pytest.raises(AccessibilityError):
+            extract_menus()
+
+    @patch("menu_extractor.subprocess.run")
+    def test_accessibility_error_keyword(self, mock_run: MagicMock) -> None:
+        mock_run.return_value = MagicMock(
+            returncode=1,
+            stdout="",
+            stderr="accessibility permissions required",
+        )
+        with pytest.raises(AccessibilityError):
             extract_menus()

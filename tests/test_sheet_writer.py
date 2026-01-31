@@ -89,6 +89,30 @@ class TestWriteToSpreadsheet:
         assert rows[1] == ["", "", "ファイル", "書き出す", "PDF"]
         assert rows[2] == ["Cmd", "N", "ファイル", "新規", ""]
 
+    @patch("sheet_writer.gspread.authorize")
+    @patch("sheet_writer.Credentials.from_service_account_file")
+    def test_empty_items(
+        self, mock_creds: MagicMock, mock_auth: MagicMock, tmp_path: MagicMock
+    ) -> None:
+        creds_file = tmp_path / "credentials.json"
+        creds_file.write_text("{}")
+
+        mock_gc = MagicMock()
+        mock_auth.return_value = mock_gc
+        mock_sh = MagicMock()
+        mock_sh.url = "https://example.com"
+        mock_gc.create.return_value = mock_sh
+        mock_ws = MagicMock()
+        mock_sh.sheet1 = mock_ws
+
+        write_to_spreadsheet("App", [], str(creds_file))
+
+        call_args = mock_ws.update.call_args
+        rows = call_args[0][0]
+
+        assert rows[0] == ["修飾キー", "キー", "Level 1"]
+        assert len(rows) == 1
+
     def test_missing_credentials(self) -> None:
         with pytest.raises(FileNotFoundError, match="credentials.json"):
             write_to_spreadsheet("App", [], "/nonexistent/credentials.json")

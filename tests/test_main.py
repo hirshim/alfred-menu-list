@@ -2,7 +2,11 @@
 
 from unittest.mock import MagicMock, patch
 
-from menu_extractor import MenuBarNotFoundError, MenuExtractionError
+from menu_extractor import (
+    AccessibilityError,
+    MenuBarNotFoundError,
+    MenuExtractionError,
+)
 
 
 class TestMain:
@@ -94,3 +98,50 @@ class TestMain:
 
         main()
         mock_notify.assert_called_once_with("メニュー項目が見つかりません: App")
+
+    @patch("main.notify")
+    @patch(
+        "main.extract_menus",
+        side_effect=AccessibilityError("not allowed assistive access"),
+    )
+    @patch("main.get_frontmost_app", return_value="App")
+    @patch("main.os.path.exists", return_value=True)
+    def test_accessibility_error(
+        self,
+        mock_exists: MagicMock,
+        mock_get_app: MagicMock,
+        mock_extract: MagicMock,
+        mock_notify: MagicMock,
+    ) -> None:
+        from main import main
+
+        main()
+        mock_notify.assert_called_once_with(
+            "アクセシビリティ権限を許可してください"
+        )
+
+    @patch("main.notify")
+    @patch(
+        "main.write_to_spreadsheet",
+        side_effect=Exception("API error"),
+    )
+    @patch(
+        "main.extract_menus",
+        return_value=("App", [("Cmd", "N", ["ファイル", "新規"])]),
+    )
+    @patch("main.get_frontmost_app", return_value="App")
+    @patch("main.os.path.exists", return_value=True)
+    def test_spreadsheet_write_error(
+        self,
+        mock_exists: MagicMock,
+        mock_get_app: MagicMock,
+        mock_extract: MagicMock,
+        mock_write: MagicMock,
+        mock_notify: MagicMock,
+    ) -> None:
+        from main import main
+
+        main()
+        mock_notify.assert_called_once_with(
+            "スプレッドシートへの書き込みに失敗しました"
+        )

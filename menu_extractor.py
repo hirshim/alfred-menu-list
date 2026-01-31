@@ -53,6 +53,12 @@ class MenuBarNotFoundError(MenuExtractionError):
     pass
 
 
+class AccessibilityError(MenuExtractionError):
+    """Raised when accessibility permissions are not granted."""
+
+    pass
+
+
 def decode_modifiers(mask: int) -> str:
     """Decode AXMenuItemCmdModifiers bitmask.
 
@@ -113,7 +119,10 @@ def extract_menus() -> Tuple[str, List[MenuItem]]:
 
     if result.returncode != 0:
         stderr = result.stderr.strip()
-        if "menu bar" in stderr.lower():
+        stderr_lower = stderr.lower()
+        if "assistive" in stderr_lower or "accessibility" in stderr_lower:
+            raise AccessibilityError(stderr)
+        if "menu bar" in stderr_lower:
             raise MenuBarNotFoundError(stderr)
         raise MenuExtractionError(stderr)
 

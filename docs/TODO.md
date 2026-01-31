@@ -8,4 +8,4 @@
 - [x] main.pyでオーケストレーション
 - [x] Makefile作成
 - [x] テスト作成
-- [ ] .alfredworkflow パッケージのビルド
+- [x] .alfredworkflow パッケージのビルド

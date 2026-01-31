@@ -38,7 +38,7 @@ format:
 check: lint test
 
 deps:
-	@pip3 install --target=lib gspread google-auth
+	@pip3 install --target=lib gspread google-auth --quiet
 	@echo "Dependencies installed to lib/"
 
 help:
