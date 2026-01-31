@@ -1,0 +1,23 @@
+# Credentials
+credentials.json
+
+# Bundled libraries
+lib/
+
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Build artifacts
+*.alfredworkflow
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
