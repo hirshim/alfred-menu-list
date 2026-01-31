@@ -9,7 +9,10 @@ from google.oauth2.service_account import Credentials
 
 from menu_extractor import MenuItem
 
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
 
 
 def write_to_spreadsheet(

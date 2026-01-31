@@ -26,12 +26,10 @@ class TestMain:
         "main.extract_menus",
         return_value=("Safari", [("Cmd", "N", ["ファイル", "新規"])]),
     )
-    @patch("main.get_frontmost_app", return_value="Safari")
     @patch("main.os.path.exists", return_value=True)
     def test_success(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_write: MagicMock,
         mock_notify: MagicMock,
@@ -48,33 +46,27 @@ class TestMain:
         "main.extract_menus",
         side_effect=MenuBarNotFoundError("no menu bar"),
     )
-    @patch("main.get_frontmost_app", return_value="SomeApp")
     @patch("main.os.path.exists", return_value=True)
     def test_menu_bar_not_found(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_notify: MagicMock,
     ) -> None:
         from main import main
 
         main()
-        mock_notify.assert_called_once_with(
-            "メニューバーが見つかりません: SomeApp"
-        )
+        mock_notify.assert_called_once_with("メニューバーが見つかりません")
 
     @patch("main.notify")
     @patch(
         "main.extract_menus",
         side_effect=MenuExtractionError("error"),
     )
-    @patch("main.get_frontmost_app", return_value="App")
     @patch("main.os.path.exists", return_value=True)
     def test_extraction_error(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_notify: MagicMock,
     ) -> None:
@@ -85,12 +77,10 @@ class TestMain:
 
     @patch("main.notify")
     @patch("main.extract_menus", return_value=("App", []))
-    @patch("main.get_frontmost_app", return_value="App")
     @patch("main.os.path.exists", return_value=True)
     def test_no_items(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_notify: MagicMock,
     ) -> None:
@@ -104,12 +94,10 @@ class TestMain:
         "main.extract_menus",
         side_effect=AccessibilityError("not allowed assistive access"),
     )
-    @patch("main.get_frontmost_app", return_value="App")
     @patch("main.os.path.exists", return_value=True)
     def test_accessibility_error(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_notify: MagicMock,
     ) -> None:
@@ -129,12 +117,10 @@ class TestMain:
         "main.extract_menus",
         return_value=("App", [("Cmd", "N", ["ファイル", "新規"])]),
     )
-    @patch("main.get_frontmost_app", return_value="App")
     @patch("main.os.path.exists", return_value=True)
     def test_spreadsheet_write_error(
         self,
         mock_exists: MagicMock,
-        mock_get_app: MagicMock,
         mock_extract: MagicMock,
         mock_write: MagicMock,
         mock_notify: MagicMock,

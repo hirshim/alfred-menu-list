@@ -17,7 +17,7 @@ make test     # テスト実行（venv内のpytestを使用）
 make lint     # flake8 + mypy
 make format   # Blackでフォーマット
 make build    # alfred-menu-list.alfredworkflow を生成
-make install  # ビルドして ~/Dropbox/Alfred/Alfred.alfredpreferences/workflows/ にインストール
+make install  # ビルドしてAlfredにインストール
 make check    # lint + test
 make deps     # pip3 install --target=lib で依存ライブラリをバンドル
 ```
@@ -45,14 +45,15 @@ Alfred `menu` + Enter → Python起動 → AppleScriptでメニュー取得 → 
 - **bundleid**: `com.hirshim.alfred-menu-list`
 - **ノード**: `[Keyword "menu"] → [Run Script (Python)]`（引数なし）
 - **Python**: `/usr/bin/python3`（macOS標準）
-- **依存**: gspread, google-auth（`lib/` にバンドル、`sys.path.insert` で読み込み）
+- **依存**: gspread, google-auth（`make deps` で `lib/` にバンドル、`sys.path.insert` で読み込み）
 - **認証**: `credentials.json`（サービスアカウントキー、gitignore対象）
 - **アイコン**: `icon.png` 512x512px、余白は黒（`#000000`）
 
 ## Notes
 
-- `credentials.json`, `lib/`, `venv/` は `.gitignore` 対象
+- `credentials.json`, `lib/`, `venv/`, `build/`, `dist/` は `.gitignore` 対象
 - アクセシビリティ権限が必要（システム設定 > プライバシーとセキュリティ > アクセシビリティ）
+- linter 設定は `setup.cfg`（flake8 max-line-length=120、mypy ignore_missing_imports=True）
 
 ## Docs
 
@@ -61,3 +62,4 @@ Alfred `menu` + Enter → Python起動 → AppleScriptでメニュー取得 → 
 | [docs/PLAN.md](docs/PLAN.md) | 詳細設計（カラム構成、AppleScript AX属性、Alfred ノード構成、Google設定手順、ディレクトリ構成） |
 | [docs/TODO.md](docs/TODO.md) | 実装タスクリスト |
 | [README.md](README.md) | ユーザー向けセットアップ手順（credentials.json の取得・配置方法を含む） |
+| [LICENSE](LICENSE) | MIT ライセンス |

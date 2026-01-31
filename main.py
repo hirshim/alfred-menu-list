@@ -11,7 +11,6 @@ from menu_extractor import (  # noqa: E402
     MenuBarNotFoundError,
     MenuExtractionError,
     extract_menus,
-    get_frontmost_app,
 )
 from sheet_writer import write_to_spreadsheet  # noqa: E402
 
@@ -25,7 +24,8 @@ def notify(message: str, title: str = "alfred-menu-list") -> None:
             "osascript",
             "-e",
             f'display notification "{msg}" with title "{ttl}"',
-        ]
+        ],
+        timeout=10,
     )
 
 
@@ -36,12 +36,6 @@ def main() -> None:
     if not os.path.exists(credentials_path):
         notify("credentials.json が見つかりません")
         return
-
-    app_name = ""
-    try:
-        app_name = get_frontmost_app()
-    except Exception:
-        pass
 
     try:
         app_name, items = extract_menus()
@@ -56,7 +50,7 @@ def main() -> None:
     except AccessibilityError:
         notify("アクセシビリティ権限を許可してください")
     except MenuBarNotFoundError:
-        notify(f"メニューバーが見つかりません: {app_name}")
+        notify("メニューバーが見つかりません")
     except MenuExtractionError:
         notify("メニュー取得に失敗しました")
     except Exception:
