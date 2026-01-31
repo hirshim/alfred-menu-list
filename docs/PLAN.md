@@ -124,6 +124,10 @@ alfred-menu-list/
 │   ├── PLAN.md
 │   └── TODO.md
 └── tests/
+    ├── __init__.py
+    ├── test_main.py
+    ├── test_menu_extractor.py
+    └── test_sheet_writer.py
 ```
 
 ## エラーハンドリング
@@ -136,6 +140,7 @@ alfred-menu-list/
 | `credentials.json` が存在しない | 「credentials.json が見つかりません」 | 通知後に終了 |
 | ネットワーク接続なし / Google API エラー | 「スプレッドシートへの書き込みに失敗しました」 | 通知後に終了 |
 | メニューバーなし（バックグラウンドプロセス等） | 「メニューバーが見つかりません: (アプリ名)」 | 通知後に終了 |
+| メニュー項目が空 | 「メニュー項目が見つかりません: (アプリ名)」 | 通知後に終了 |
 
 ## テスト時の注意
 
